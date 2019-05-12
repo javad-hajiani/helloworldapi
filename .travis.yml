@@ -5,7 +5,7 @@ services:
 env:
   global:
     - DOCKER_REPO=revolut/helloworld
-    - AWS_ACCOUNT_ID=${env:AWS_ACCOUNT_ID}
+    - AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID}
     - EB_REGION="us-east-2"
 before_install:
   - pip install awscli
