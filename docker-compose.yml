@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  hello-world-api:
+    build: .
+    restart: always
+    environment:
+      - USER_DATA_DIR="/opt"
+    ports:
+      - "5000:4567"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4567/"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
