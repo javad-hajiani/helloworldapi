@@ -13,7 +13,7 @@ TARGET_IMAGE_VERSIONED="${TARGET_IMAGE}:${VERSION}"
 # Push image to ECR
 ###################
 
-$(aws ecr get-login --no-include-email)
+eval $(aws ecr get-login --no-include-email | sed 's|https://||')
 
 # update latest version
 docker tag ${SOURCE_IMAGE} ${TARGET_IMAGE_LATEST}
