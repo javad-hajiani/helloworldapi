@@ -4,14 +4,22 @@ services:
   - docker
 env:
   global:
-    - DOCKER_REPO=revolut/helloworld
+    - DOCKER_REPO=revolut:helloworld
     - AWS_ACCOUNT_ID=839431657321
+    - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
     - EB_REGION="us-east-2"
 before_install:
   - pip install awscli
   - export PATH=$PATH:$HOME/.local/bin
 script:
   - docker build -t $DOCKER_REPO .
+
+#after_success:
+#  - eval $() #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
+#  - docker build -t my_example_app .
+#  - docker tag my_example_app:latest [your_ecr_account].dkr.ecr.us-east-1.amazonaws.com/my_example_app:latest
+#  - docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my_example_app:latest
 deploy:
   provider: script
   script: bash docker_push.sh
