@@ -1,0 +1,19 @@
+sudo: required
+language: python
+services:
+  - docker
+env:
+  global:
+    - DOCKER_REPO=revolut/helloworld
+    - AWS_ACCOUNT_ID=${env:AWS_ACCOUNT_ID}
+    - EB_REGION="us-east-2"
+before_install:
+  - pip install awscli
+  - export PATH=$PATH:$HOME/.local/bin
+script:
+  - docker build -t $DOCKER_REPO .
+deploy:
+  provider: script
+  script: bash docker_push.sh
+  on:
+    branch: master
