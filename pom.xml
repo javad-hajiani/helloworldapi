@@ -58,55 +58,38 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.5.0</version>
                 <configuration>
-                    <mainClass>io.fabric8.dmp.sample.helloworld.App</mainClass>
+                    <mainClass>com.revolut.devops.challenge.Main</mainClass>
                 </configuration>
             </plugin>
+            <!-- Maven Assembly Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4.1</version>
                 <configuration>
+                    <!-- get all project dependencies -->
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <!-- MainClass in mainfest make a executable jar -->
                     <archive>
                         <manifest>
                             <mainClass>com.revolut.devops.challenge.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <configuration>
-                    <images>
-                        <image>
-                            <name>hello/sub/project/java:${project.version}</name>
-                            <alias>hello-world</alias>
-                            <build>
-                                <from>openjdk:latest</from>
-                                <assembly>
-                                    <descriptorRef>artifact</descriptorRef>
-                                </assembly>
-                                <cmd>java -jar maven/${project.name}-${project.version}.jar</cmd>
-                            </build>
-                            <run>
-                                <wait>
-                                    <log>Hello World!</log>
-                                </wait>
-                            </run>
-                        </image>
-                    </images>
-                </configuration>
                 <executions>
                     <execution>
-                        <id>docker:start</id>
-                        <phase>install</phase>
+                        <id>make-assembly</id>
+                        <!-- bind to the packaging phase -->
+                        <phase>package</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 
