@@ -6,6 +6,7 @@ import com.revolut.devops.challenge.exceptions.InvalidBirthdateException;
 import com.revolut.devops.challenge.exceptions.InvalidUsernameException;
 import spark.Request;
 import spark.Response;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +19,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.put;
 
 public class Main {
     public static ObjectMapper objectMapper;
@@ -52,28 +54,26 @@ public class Main {
             Files.write(Paths.get(System.getenv("USER_DATA_DIR") + "/" + request.params(":username") + ".json"), userInfoToPersist.getBytes());
             response.status(204);
             return "Success!";
-        } catch (InvalidUsernameException e){
+        } catch (InvalidUsernameException e) {
             response.status(400);
             e.printStackTrace();
             return e.getMessage();
-        } catch (InvalidBirthdateException e){
+        } catch (InvalidBirthdateException e) {
             response.status(400);
             e.printStackTrace();
             return e.getMessage();
-        }catch (IOException e) {
+        } catch (IOException e) {
             response.status(400);
             e.printStackTrace();
             return e.getMessage();
         }
 
 
-
-
     }
 
     private static User createUserInstance(Request request) throws InvalidBirthdateException, IOException, InvalidUsernameException {
         Matcher matcher = userNamePattern.matcher(request.params(":username"));
-        if(!matcher.find()){
+        if (!matcher.find()) {
             throw new InvalidUsernameException("Username must only have alphabet characters and at least be 3 chars and at max be 15!");
         }
         if (request.body().isEmpty()) {
@@ -94,7 +94,7 @@ public class Main {
                 objectMapper = new ObjectMapper();
             }
 
-            User userObject = objectMapper.readValue(new File("/opt/userdata/" + request.params(":username") + ".json"), User.class);
+            User userObject = objectMapper.readValue(new File(System.getenv("USER_DATA_DIR") + "/" + request.params(":username") + ".json"), User.class);
             String responseMessage = calculateBirthdate(request.params(":username"), userObject.getDateOfBirth());
             return responseMessage;
         } catch (Exception e) {
@@ -119,7 +119,7 @@ public class Main {
             nextBirthday = ChronoUnit.DAYS.between(measurableCurrentDate, LocalDate.parse(dateFormatter.format(updatableBirthDate.getTime())));
         }
 
-        return "Hello "+ username + "  " + nextBirthday + " Day(s) to your birthday";
+        return "Hello " + username + "  " + nextBirthday + " Day(s) to your birthday";
 
     }
 
