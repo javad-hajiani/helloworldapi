@@ -1,4 +1,5 @@
 package com.revolut.devops.challenge.entity;
+
 import java.util.Date;
 
 public class User {
