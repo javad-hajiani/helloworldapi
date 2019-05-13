@@ -14,12 +14,9 @@ before_install:
   - export PATH=$PATH:$HOME/.local/bin
 script:
   - docker build -t $DOCKER_REPO .
-
-#after_success:
-#  - eval $() #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
-#  - docker build -t my_example_app .
-#  - docker tag my_example_app:latest [your_ecr_account].dkr.ecr.us-east-1.amazonaws.com/my_example_app:latest
-#  - docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my_example_app:latest
+  - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+  - aws configure set aws_secret_access_key $AWS_ACCESS_KEY_ID
+  - aws configure set default.region $EB_REGION
 deploy:
   provider: script
   script: bash docker_push.sh
